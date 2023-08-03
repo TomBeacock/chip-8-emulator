@@ -2,6 +2,9 @@
 
 #include <cstdint>
 #include <vector>
+#include <glad/gl.h>
+
+struct GLFWwindow;
 
 namespace Chip8
 {
@@ -16,6 +19,10 @@ namespace Chip8
       private:
         uint8_t width;
         uint8_t height;
-        std::vector<bool> display;
+        GLuint display;
+        std::vector<uint8_t> pixels;
+        GLuint mesh;
+        GLuint shader;
+        bool dirty;
     };
 } // namespace Chip8

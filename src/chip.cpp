@@ -28,15 +28,12 @@ namespace Chip8
             0xF0, 0x80, 0xF0, 0x80, 0x80  // F
         };
         std::copy(std::begin(font), std::end(font), std::begin(memory) + 0x50);
-    }
 
-    void Chip::runProgram() {
         for (size_t i = 0; i < 10; i++) {
             display->drawSprite(&memory[0x50 + i * 5], 5, i * 6, 0);
         }
         for (size_t i = 0; i < 6; i++) {
             display->drawSprite(&memory[0x50 + (i + 10) * 5], 5, i * 6, 6);
         }
-        display->refresh();
     }
 } // namespace Chip8

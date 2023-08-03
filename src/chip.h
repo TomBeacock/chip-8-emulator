@@ -11,8 +11,6 @@ namespace Chip8
       public:
         Chip(Display *display);
 
-        void runProgram();
-
       private:
         uint8_t memory[4096];
         Display *display;
