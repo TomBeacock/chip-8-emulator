@@ -15,6 +15,7 @@ namespace Chip8
 
         void refresh();
         void drawSprite(uint8_t *src, uint8_t n, uint8_t x, uint8_t y);
+        void clear();
 
       private:
         uint8_t width;

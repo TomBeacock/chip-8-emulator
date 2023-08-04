@@ -13,3 +13,4 @@ IncludeBlocks: Regroup
 FixNamespaceComments: true
 ColumnLimit: 80
 AllowShortFunctionsOnASingleLine: Empty
+IndentCaseLabels: true

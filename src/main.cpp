@@ -3,6 +3,7 @@
 
 #include <GLFW/glfw3.h>
 #include <glad/gl.h>
+#include <fstream>
 
 using namespace Chip8;
 
@@ -25,11 +26,28 @@ int main(int argc, char **argv)
 
     Display display(width, height);
     Chip chip(&display);
+    chip.loadProgram(argv[1]);
 
+    double lastRefresh = 0.0;
+    double lastInstruction = 0.0;
     while (!glfwWindowShouldClose(window)) {
         glfwPollEvents();
-        display.refresh();
-        glfwSwapBuffers(window);
+
+        double currentTime = glfwGetTime();
+
+        // Limit to 700hz
+        if (currentTime - lastInstruction >= 1.0 / 700.0) {
+            chip.runNext();
+            lastInstruction = currentTime;
+        }
+
+        // Limit to 60hz
+        if (currentTime - lastRefresh >= 1.0 / 60.0) {
+            display.refresh();
+            chip.decrementTimers();
+            glfwSwapBuffers(window);
+            lastRefresh = currentTime;
+        }
     }
 
     glfwDestroyWindow(window);

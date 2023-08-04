@@ -59,6 +59,13 @@ namespace Chip8
         dirty = true;
     }
 
+    void Display::clear()
+    {
+        for (size_t i = 0; i < width * height; i++) {
+            pixels[i] = 0;
+        }
+    }
+
     GLuint createTexture(GLsizei width, GLsizei height)
     {
         GLuint texture;
@@ -146,7 +153,8 @@ void main() {
 
         GLuint vertexBuffer;
         glCreateBuffers(1, &vertexBuffer);
-        glNamedBufferData(vertexBuffer, sizeof(vertices), &vertices, GL_STATIC_DRAW);
+        glNamedBufferData(
+            vertexBuffer, sizeof(vertices), &vertices, GL_STATIC_DRAW);
 
         // Create vertex array
         GLuint vertexArray;
