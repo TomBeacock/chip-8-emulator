@@ -7,11 +7,12 @@
 namespace Chip8
 {
     class Display;
+    class IO;
 
     class Chip
     {
       public:
-        Chip(Display *display);
+        Chip(Display *display, IO *io);
 
         void loadProgram(const char *file);
         void decrementTimers();
@@ -28,8 +29,7 @@ namespace Chip8
         uint8_t registers[16] = {0};
         std::stack<uint16_t> stack;
         uint8_t soundTimer = 0, delayTimer = 0;
-        uint16_t keyPressedStates;
-        uint16_t keyReleasedStates;
         Display *display;
+        IO *io;
     };
 } // namespace Chip8

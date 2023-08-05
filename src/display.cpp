@@ -37,13 +37,15 @@ namespace Chip8
         glDrawArrays(GL_TRIANGLES, 0, 6);
     }
 
-    void Display::drawSprite(uint8_t *src, uint8_t n, uint8_t x, uint8_t y)
+    bool Display::drawSprite(uint8_t *src, uint8_t n, uint8_t x, uint8_t y)
     {
         // Wrap coord to screen
         x %= width;
         y %= height;
 
         // Iterate pixels
+        bool pixelTurnedOff = false;
+
         for (size_t i = 0, dy = y; dy < std::min((uint8_t)(y + n), height);
              i++, dy++) {
             uint8_t byte = src[i];
@@ -52,11 +54,16 @@ namespace Chip8
                  dx++, mask >>= 1) {
                 if ((byte & mask) > 0) {
                     // Flip pixel
-                    pixels[dy * width + dx] = ~pixels[dy * width + dx];
+                    size_t i = dy * width + dx;
+                    if (pixels[i] > 0) {
+                        pixelTurnedOff = true;
+                    }
+                    pixels[i] = ~pixels[i];
                 }
             }
         }
         dirty = true;
+        return pixelTurnedOff;
     }
 
     void Display::clear()

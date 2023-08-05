@@ -1,6 +1,7 @@
 #include "chip.h"
 
 #include "display.h"
+#include "io.h"
 
 #include <algorithm>
 #include <cstdlib>
@@ -8,11 +9,9 @@
 #include <iterator>
 #include <iostream>
 
-#define KEY(n) ((keyPressedStates >> n) & 1)
-
 namespace Chip8
 {
-    Chip::Chip(Display *display) : display(display)
+    Chip::Chip(Display *display, IO *io) : display(display), io(io)
     {
         // Load font
         uint8_t font[16 * 5] = {
@@ -207,7 +206,7 @@ namespace Chip8
             }
             // Display
             case 0xD: {
-                display->drawSprite(
+                registers[0xF] = display->drawSprite(
                     memory + index, n, registers[x], registers[y]);
                 break;
             }
@@ -216,14 +215,14 @@ namespace Chip8
                 switch (nn) {
                     // Key down
                     case 0x9E: {
-                        if (KEY(registers[x])) {
+                        if (io->isKeyDown(registers[x])) {
                             pc += 2;
                         }
                         break;
                     }
                     // Key up
                     case 0xA1: {
-                        if (KEY(registers[x])) {
+                        if (!io->isKeyDown(registers[x])) {
                             pc += 2;
                         }
                         break;
@@ -254,17 +253,13 @@ namespace Chip8
                         index += registers[x];
                         break;
                     }
-                    // Get key
+                    // Wait for key
                     case 0x0A: {
-                        if (keyReleasedStates == 0) {
-                            pc -= 2;
+                        auto key = io->getReleasedKey();
+                        if (key.has_value()) {
+                            registers[x] = key.value();
                         } else {
-                            uint16_t key = 0;
-                            for (uint16_t temp = keyReleasedStates;
-                                 (temp & 1) == 0; temp >>= 1) {
-                                key++;
-                            }
-                            registers[x] = key;
+                            pc -= 2;
                         }
                         break;
                     }
